@@ -2,6 +2,7 @@ import { Container, Grid, Sticky } from 'semantic-ui-react'
 import Footer from './components/footer/Footer'
 import Header from './components/header/Header'
 import { useEffect, useState } from 'react'
+import styles from './App.module.css'
 import Carte from './components/Carte/Carte'
 import ModalInscription from './components/Modales/ModalInscription'
 import ModalCGI from './components/Modales/ModalCGI'
@@ -59,7 +60,7 @@ function App() {
   // }, [profiles])
 
   return (
-    <>
+    <div className={styles.container}>
       <Sticky>
         <Header openModal={() => setOpenModal(true)}></Header>
       </Sticky>
@@ -70,7 +71,7 @@ function App() {
         handleSubmit={handleSubmit}
       />
 
-      <Grid
+      <Grid className={styles.content}
         stackable
         style={{
           margin: '5rem auto',
@@ -93,7 +94,7 @@ function App() {
       <ModalCGI openModal={openModalCGI} setOpenModal={setOpenModalCGI} />
 
       <Footer openModal={() => setOpenModalCGI(true)} />
-    </>
+    </div>
   )
 }
 

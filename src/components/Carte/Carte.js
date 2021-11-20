@@ -20,26 +20,28 @@ const Carte = ({ profil }) => {
           <Header style={{ margin: '10px 0 15px', textAlign: 'center' }}>
             {profil.name}
           </Header>
-          <Segment>
-            {profil.skills?.map(skill => (
-              <Card.Content
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '1.1rem',
-                }}
-              >
-                {skill.name}:
-                <Rating
-                  icon='star'
-                  defaultRating={0}
-                  maxRating={5}
-                  rating={skill.rating}
-                />
-              </Card.Content>
-            ))}
-          </Segment>
+          {profil.skills[0].name && (
+            <Segment>
+              {profil.skills.map(skill => (
+                <Card.Content
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '1.1rem',
+                  }}
+                >
+                  {skill.name}:
+                  <Rating
+                    icon='star'
+                    defaultRating={0}
+                    maxRating={5}
+                    rating={skill.rating}
+                  />
+                </Card.Content>
+              ))}
+            </Segment>
+          )}
         </Card.Content>
         <Card.Content style={{ marginTop: '1rem' }}>
           <ModalProfil profil={profil} />

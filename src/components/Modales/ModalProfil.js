@@ -24,27 +24,29 @@ const ModalProfil = ({ profil }) => {
         {name}
       </Modal.Header>
       <Modal.Content>
-        <Segment>
-          {skills?.map(skill => (
-            <Card.Content
-              style={{
-                marginBottom: '10px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                fontSize: '1.3rem',
-              }}
-            >
-              {skill.name}:
-              <Rating
-                icon='star'
-                defaultRating={0}
-                maxRating={5}
-                rating={skill.rating}
-              />
-            </Card.Content>
-          ))}
-        </Segment>
+        {profil.skills[0].name && (
+          <Segment>
+            {skills?.map(skill => (
+              <Card.Content
+                style={{
+                  marginBottom: '10px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '1.3rem',
+                }}
+              >
+                {skill.name}:
+                <Rating
+                  icon='star'
+                  defaultRating={0}
+                  maxRating={5}
+                  rating={skill.rating}
+                />
+              </Card.Content>
+            ))}
+          </Segment>
+        )}
         <Segment
           padded={!presentation && 'very'}
           secondary
