@@ -13,10 +13,8 @@ import { useDropzone } from 'react-dropzone'
 import { useEffect, useRef, useState } from 'react'
 
 const Inscription = ({ handleSubmit }) => {
-  const [isRequired, setIsRequired] = useState(true)
   const [skillsList, setSkillsList] = useState([{ name: '', rating: null }])
   const [inputError, setInputError] = useState('')
-  const [rate, setRate] = useState()
   const [profile, setProfile] = useState({
     name: '',
     presentation: '',
@@ -66,11 +64,10 @@ const Inscription = ({ handleSubmit }) => {
   }
 
   const isValueEntered = ref => {
-    if (isRequired && profile.name === '') {
+    if (ref.currentTarget.value === '') {
       setInputError('Veuillez remplir ce champ')
       ref.currentTarget.focus()
     } else {
-      setIsRequired(false)
       setInputError('')
     }
   }
@@ -90,7 +87,7 @@ const Inscription = ({ handleSubmit }) => {
               setProfile({ ...profile, name: e.target.value })
               setInputError('')
             }}
-            onBlur={isValueEntered} //FIXME pas d'alerte si on efface le champ
+            onBlur={isValueEntered}
             value={profile.name}
             error={inputError}
           />
@@ -171,7 +168,10 @@ const Inscription = ({ handleSubmit }) => {
                     value={skill.name}
                     onChange={e =>
                       retoucherSkill(
-                        { ...skill, name: e.currentTarget.value },
+                        {
+                          ...skill,
+                          name: e.target.value !== '' && e.target.value,
+                        },
                         i
                       )
                     }
@@ -182,8 +182,7 @@ const Inscription = ({ handleSubmit }) => {
                     defaultRating={0}
                     maxRating={5}
                     onRate={(e, { rating }) => {
-                      setRate({ rating })
-                      retoucherSkill({ ...skill, rating: (rate || 0) }, i) //FIXME pas de rerender => rating :rate est undefined
+                      retoucherSkill({ ...skill, rating: rating || 0 }, i)
                     }}
                     size='huge'
                   />

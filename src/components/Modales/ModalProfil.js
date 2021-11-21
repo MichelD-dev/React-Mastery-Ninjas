@@ -11,7 +11,11 @@ const ModalProfil = ({ profil }) => {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Button fluid>En savoir plus</Button>}
+      trigger={
+        <Button size='large' fluid>
+          En savoir plus
+        </Button>
+      }
     >
       <Modal.Header
         style={{

@@ -16,29 +16,8 @@ function App() {
   const [openModalCGI, setOpenModalCGI] = useState(false)
   const [error, setError] = useState('')
   const [data, setData] = useState([])
-  const [profiles, setProfiles] = useState([
-    // {
-    //   name: 'MichelD',
-    //   photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-    //   skills: [
-    //     { name: 'html/css', rating: 4 },
-    //     { name: 'js', rating: 3 },
-    //     { name: 'php', rating: 4 },
-    //     { name: 'react', rating: 4 },
-    //   ],
-    // },
-    // {
-    //   name: 'Dummy (de passage...)',
-    //   photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-    //   skills: [
-    //     { name: 'html', rating: 2 },
-    //     { name: 'css', rating: 1 },
-    //     { name: 'js', rating: 3 },
-    //   ],
-    //   presentation:
-    //     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque mollitia deserunt ut delectus rerum dolor reprehenderit, quidem repudiandae aut nostrum! Iure quos itaque possimus at repudiandae eum, accusamus mollitia saepe.',
-    // },
-  ])
+  const [submitted, setSubmitted] = useState(false)
+  const [profiles, setProfiles] = useState([])
 
   useEffect(() => {
     const getProfiles = async () => {
@@ -54,13 +33,7 @@ function App() {
       }
     }
     getProfiles()
-  }, [data])
-
-  // useEffect((profile, url, skillsList) => console.log({
-  //   ...profile,
-  //   photo: url,
-  //   skills: skillsList,
-  // })) //FIXME n'envoie plus les profils en BDD
+  }, [profiles])
 
   const handleSubmit = (profile, skillsList, file) => {
     setProfiles([
@@ -86,6 +59,7 @@ function App() {
         photo: url,
         skills: skillsList,
       })
+      setSubmitted(val => !val)
     } catch (e) {
       setError(e.message)
     }
@@ -96,13 +70,12 @@ function App() {
       <Sticky>
         <Header openModal={() => setOpenModal(true)}></Header>
       </Sticky>
-      {error && <p>{error}</p>}
+
       <ModalInscription
         openModal={openModal}
         setOpenModal={setOpenModal}
         handleSubmit={handleSubmit}
       />
-
       <Grid
         className={styles.content}
         stackable
@@ -111,18 +84,14 @@ function App() {
           width: '90%',
         }}
       >
-        {data.map((profil, i) => (
-          <Grid.Column
-            key={`${profil.name}${i}`}
-            mobile={16}
-            tablet={8}
-            computer={4}
-          >
-            <Carte profil={profil} />
-          </Grid.Column>
-        ))}
+        {data.map((profil, i) => {
+          return (
+            <Grid.Column key={profil.id} mobile={16} tablet={8} computer={4}>
+              <Carte profil={profil} />
+            </Grid.Column>
+          )
+        })}
       </Grid>
-
       <ModalCGI openModal={openModalCGI} setOpenModal={setOpenModalCGI} />
       <Footer openModal={() => setOpenModalCGI(true)} />
     </div>
