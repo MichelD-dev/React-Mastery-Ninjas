@@ -16,6 +16,7 @@ const Inscription = ({ handleSubmit }) => {
   const [isRequired, setIsRequired] = useState(true)
   const [skillsList, setSkillsList] = useState([{ name: '', rating: null }])
   const [inputError, setInputError] = useState('')
+  const [rate, setRate] = useState()
   const [profile, setProfile] = useState({
     name: '',
     presentation: '',
@@ -180,8 +181,9 @@ const Inscription = ({ handleSubmit }) => {
                     icon='star'
                     defaultRating={0}
                     maxRating={5}
-                    onRate={({ rating }) => {
-                      retoucherSkill({ ...skill, rating: 2 }, i) //FIXME le rating ne peu pas être lu directement, on doit passer par un state
+                    onRate={(e, { rating }) => {
+                      setRate({ rating })
+                      retoucherSkill({ ...skill, rating: (rate || 0) }, i) //FIXME pas de rerender => rating :rate est undefined
                     }}
                     size='huge'
                   />
@@ -189,7 +191,6 @@ const Inscription = ({ handleSubmit }) => {
               </Segment>
             )
           })}
-
           <Button fluid onClick={ajouterSkill}>
             Ajouter un langage
           </Button>

@@ -49,19 +49,23 @@ function App() {
           ...doc.data(),
         }))
         setData(cards)
-        console.log(cards)
       } catch (e) {
         setError(e.message)
       }
     }
     getProfiles()
-  }, [])
+  }, [data])
+
+  // useEffect((profile, url, skillsList) => console.log({
+  //   ...profile,
+  //   photo: url,
+  //   skills: skillsList,
+  // })) //FIXME n'envoie plus les profils en BDD
 
   const handleSubmit = (profile, skillsList, file) => {
-    console.log(file.name)
     setProfiles([
       ...profiles,
-      { ...profile, photo: file.name, skills: skillsList },
+      { ...profile, photo: file?.name, skills: skillsList },
     ])
     setOpenModal(false)
     submit(profile, skillsList, file)
@@ -69,20 +73,15 @@ function App() {
 
   const submit = async (profile, skillsList, file) => {
     try {
-      if (!file)
-        return {
-          /*FIXME  Pas d'envoi si pas d'image...*/
-        }
-
       // on crée une référence vers le fichier dans firebase
-      const imgRef = ref(storage, file.name)
+      const imgRef = file && ref(storage, file.name)
 
       // On upload l'image
-      const snapshot = await uploadBytes(imgRef, file)
+      const snapshot = file && (await uploadBytes(imgRef, file))
 
       // On récupère le lien (l'url de l'image)
-      const url = await getDownloadURL(snapshot.ref)
-      const profil = await addDoc(collection(db, 'profiles'), {
+      const url = file && (await getDownloadURL(snapshot.ref))
+      const profilRef = await addDoc(collection(db, 'profiles'), {
         ...profile,
         photo: url,
         skills: skillsList,
@@ -97,7 +96,7 @@ function App() {
       <Sticky>
         <Header openModal={() => setOpenModal(true)}></Header>
       </Sticky>
-
+      {error && <p>{error}</p>}
       <ModalInscription
         openModal={openModal}
         setOpenModal={setOpenModal}
@@ -125,8 +124,6 @@ function App() {
       </Grid>
 
       <ModalCGI openModal={openModalCGI} setOpenModal={setOpenModalCGI} />
-      {error && <p>{error}</p>}
-      {/* //FIXME */}
       <Footer openModal={() => setOpenModalCGI(true)} />
     </div>
   )

@@ -4,7 +4,7 @@ import ModalProfil from '../Modales/ModalProfil'
 const Carte = ({ profil }) => {
   return (
     <Card>
-      <Image src={profil.photo} wrapped ui={false} />
+      <Image src={profil.photo || 'https://react.semantic-ui.com/images/avatar/large/matthew.png'} wrapped ui={false} /> {/*//FIXME image carrée */}
       <Card.Content>
         <Card.Content>
           <Header style={{ margin: '10px 0 15px', textAlign: 'center' }}>
@@ -23,7 +23,7 @@ const Carte = ({ profil }) => {
                     fontSize: '1.1rem',
                   }}
                 >
-                  {skill.name}:
+                  {skill.name[0].toUpperCase() + skill.name.slice(1)}:
                   <Rating
                     icon='star'
                     defaultRating={0}
