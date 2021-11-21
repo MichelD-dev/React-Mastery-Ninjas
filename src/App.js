@@ -6,13 +6,17 @@ import styles from './App.module.css'
 import Carte from './components/Carte/Carte'
 import ModalInscription from './components/Modales/ModalInscription'
 import ModalCGI from './components/Modales/ModalCGI'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { storage } from './firebase/firebase'
 
 function App() {
   const [openModal, setOpenModal] = useState(false)
   const [openModalCGI, setOpenModalCGI] = useState(false)
+  const [error, setError] = useState('')
   const [profiles, setProfiles] = useState([
     {
       name: 'MichelD',
+      photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
       skills: [
         { name: 'html/css', rating: 4 },
         { name: 'js', rating: 3 },
@@ -22,6 +26,7 @@ function App() {
     },
     {
       name: 'Dummy (de passage...)',
+      photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
       skills: [
         { name: 'html', rating: 2 },
         { name: 'css', rating: 1 },
@@ -31,28 +36,30 @@ function App() {
         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque mollitia deserunt ut delectus rerum dolor reprehenderit, quidem repudiandae aut nostrum! Iure quos itaque possimus at repudiandae eum, accusamus mollitia saepe.',
     },
   ])
-
+  
   const handleSubmit = (profile, skillsList) => {
     setProfiles([...profiles, { ...profile, skills: skillsList }])
     setOpenModal(false)
+  }
 
-    // try {   //FIXME ne pas oublier l'async
-    //   if (!file)
-    //     return {
-    //       /*FIXME  Pas d'envoi si pas d'image...*/
-    //     }
+  const submitImg = async file => {
+    try {
+      if (!file)
+        return {
+          /*FIXME  Pas d'envoi si pas d'image...*/
+        }
 
-    //   // on crée une référence vers le fichier dans firebase
-    //   const imgRef = ref(storage, file.name)
+      // on crée une référence vers le fichier dans firebase
+      const imgRef = ref(storage, file.name)
 
-    //   // On upload l'image
-    //   const snapshot = await uploadBytes(imgRef, file)
+      // On upload l'image
+      const snapshot = await uploadBytes(imgRef, file)
 
-    //   // On récupère le lien (l'url de l'image)
-    //   const url = await getDownloadURL(snapshot.ref)
-    // } catch (e) {
-    //   setError(e.message)
-    // }
+      // On récupère le lien (l'url de l'image)
+      const url = await getDownloadURL(snapshot.ref)
+    } catch (e) {
+      setError(e.message)
+    }
   }
 
   return (
@@ -65,6 +72,7 @@ function App() {
         openModal={openModal}
         setOpenModal={setOpenModal}
         handleSubmit={handleSubmit}
+        submitImg={submitImg}
       />
 
       <Grid
@@ -75,20 +83,21 @@ function App() {
           width: '90%',
         }}
       >
-        {profiles.map((profil, i) => (
+        {profiles.map((profil, url, i) => (
           <Grid.Column
             key={`${profil.name}${i}`}
             mobile={16}
             tablet={8}
             computer={4}
           >
-            <Carte profil={profil} />
+            <Carte profil={profil} url={url} />
           </Grid.Column>
         ))}
       </Grid>
 
       <ModalCGI openModal={openModalCGI} setOpenModal={setOpenModalCGI} />
-
+      {error && <p>{error}</p>}
+      {/* //FIXME */}
       <Footer openModal={() => setOpenModalCGI(true)} />
     </div>
   )

@@ -8,12 +8,11 @@ import {
   TextArea,
 } from 'semantic-ui-react'
 import Input from './Input'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { storage } from '../../firebase/firebase'
+
 import { useDropzone } from 'react-dropzone'
 import { useEffect, useRef, useState } from 'react'
 
-const Inscription = ({ handleSubmit }) => {
+const Inscription = ({ handleSubmit, submitImg }) => {
   const [isRequired, setIsRequired] = useState(true)
   const [skillsList, setSkillsList] = useState([{ name: '', rating: null }])
   const [inputError, setInputError] = useState('')
@@ -41,6 +40,7 @@ const Inscription = ({ handleSubmit }) => {
       setCheckBoxError(true)
       return
     }
+    submitImg(file)
     handleSubmit(profile, skillsList)
   }
 
@@ -64,10 +64,6 @@ const Inscription = ({ handleSubmit }) => {
       })
     )
   }
-
-  // useEffect(() => {
-  //   console.log(skillsList)
-  // }, [skillsList])
 
   const isValueEntered = ref => {
     if (isRequired && profile.name === '') {

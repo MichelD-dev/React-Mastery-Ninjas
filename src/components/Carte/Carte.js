@@ -1,11 +1,11 @@
 import { Card, Header, Image, Rating, Segment } from 'semantic-ui-react'
 import ModalProfil from '../Modales/ModalProfil'
 
-const Carte = ({ profil }) => {
+const Carte = ({ profil, url }) => {
   return (
     <Card>
       <Image
-        src='https://react.semantic-ui.com/images/avatar/large/matthew.png'
+        src={url}
         wrapped
         ui={false}
       />
