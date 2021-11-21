@@ -1,14 +1,10 @@
 import { Card, Header, Image, Rating, Segment } from 'semantic-ui-react'
 import ModalProfil from '../Modales/ModalProfil'
 
-const Carte = ({ profil, url }) => {
+const Carte = ({ profil }) => {
   return (
     <Card>
-      <Image
-        src={url}
-        wrapped
-        ui={false}
-      />
+      <Image src={profil.photo} wrapped ui={false} />
       <Card.Content>
         <Card.Content>
           <Header style={{ margin: '10px 0 15px', textAlign: 'center' }}>

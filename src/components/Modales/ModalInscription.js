@@ -1,12 +1,7 @@
 import { Modal } from 'semantic-ui-react'
 import Form from '../Inscription/Inscription'
 
-const ModalInscription = ({
-  openModal,
-  setOpenModal,
-  handleSubmit,
-  submitImg,
-}) => {
+const ModalInscription = ({ openModal, setOpenModal, handleSubmit }) => {
   return (
     <Modal
       onClose={() => setOpenModal(false)}
@@ -15,7 +10,7 @@ const ModalInscription = ({
     >
       <Modal.Header>Formulaire d'inscription</Modal.Header>
       <Modal.Content>
-        <Form handleSubmit={handleSubmit} submitImg={submitImg} />
+        <Form handleSubmit={handleSubmit} />
       </Modal.Content>
     </Modal>
   )

@@ -1,48 +1,73 @@
 import { Grid, Sticky } from 'semantic-ui-react'
 import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './App.module.css'
 import Carte from './components/Carte/Carte'
 import ModalInscription from './components/Modales/ModalInscription'
 import ModalCGI from './components/Modales/ModalCGI'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { storage } from './firebase/firebase'
+import { addDoc, getDocs, collection } from 'firebase/firestore'
+import { db } from './firebase/firebase.js'
 
 function App() {
   const [openModal, setOpenModal] = useState(false)
   const [openModalCGI, setOpenModalCGI] = useState(false)
   const [error, setError] = useState('')
+  const [data, setData] = useState([])
   const [profiles, setProfiles] = useState([
-    {
-      name: 'MichelD',
-      photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-      skills: [
-        { name: 'html/css', rating: 4 },
-        { name: 'js', rating: 3 },
-        { name: 'php', rating: 4 },
-        { name: 'react', rating: 4 },
-      ],
-    },
-    {
-      name: 'Dummy (de passage...)',
-      photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-      skills: [
-        { name: 'html', rating: 2 },
-        { name: 'css', rating: 1 },
-        { name: 'js', rating: 3 },
-      ],
-      presentation:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque mollitia deserunt ut delectus rerum dolor reprehenderit, quidem repudiandae aut nostrum! Iure quos itaque possimus at repudiandae eum, accusamus mollitia saepe.',
-    },
+    // {
+    //   name: 'MichelD',
+    //   photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
+    //   skills: [
+    //     { name: 'html/css', rating: 4 },
+    //     { name: 'js', rating: 3 },
+    //     { name: 'php', rating: 4 },
+    //     { name: 'react', rating: 4 },
+    //   ],
+    // },
+    // {
+    //   name: 'Dummy (de passage...)',
+    //   photo: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
+    //   skills: [
+    //     { name: 'html', rating: 2 },
+    //     { name: 'css', rating: 1 },
+    //     { name: 'js', rating: 3 },
+    //   ],
+    //   presentation:
+    //     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque mollitia deserunt ut delectus rerum dolor reprehenderit, quidem repudiandae aut nostrum! Iure quos itaque possimus at repudiandae eum, accusamus mollitia saepe.',
+    // },
   ])
-  
-  const handleSubmit = (profile, skillsList) => {
-    setProfiles([...profiles, { ...profile, skills: skillsList }])
+
+  useEffect(() => {
+    const getProfiles = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'profiles'))
+        const cards = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setData(cards)
+        console.log(cards)
+      } catch (e) {
+        setError(e.message)
+      }
+    }
+    getProfiles()
+  }, [])
+
+  const handleSubmit = (profile, skillsList, file) => {
+    console.log(file.name)
+    setProfiles([
+      ...profiles,
+      { ...profile, photo: file.name, skills: skillsList },
+    ])
     setOpenModal(false)
+    submit(profile, skillsList, file)
   }
 
-  const submitImg = async file => {
+  const submit = async (profile, skillsList, file) => {
     try {
       if (!file)
         return {
@@ -57,6 +82,11 @@ function App() {
 
       // On récupère le lien (l'url de l'image)
       const url = await getDownloadURL(snapshot.ref)
+      const profil = await addDoc(collection(db, 'profiles'), {
+        ...profile,
+        photo: url,
+        skills: skillsList,
+      })
     } catch (e) {
       setError(e.message)
     }
@@ -72,7 +102,6 @@ function App() {
         openModal={openModal}
         setOpenModal={setOpenModal}
         handleSubmit={handleSubmit}
-        submitImg={submitImg}
       />
 
       <Grid
@@ -83,14 +112,14 @@ function App() {
           width: '90%',
         }}
       >
-        {profiles.map((profil, url, i) => (
+        {data.map((profil, i) => (
           <Grid.Column
             key={`${profil.name}${i}`}
             mobile={16}
             tablet={8}
             computer={4}
           >
-            <Carte profil={profil} url={url} />
+            <Carte profil={profil} />
           </Grid.Column>
         ))}
       </Grid>

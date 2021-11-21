@@ -12,7 +12,7 @@ import Input from './Input'
 import { useDropzone } from 'react-dropzone'
 import { useEffect, useRef, useState } from 'react'
 
-const Inscription = ({ handleSubmit, submitImg }) => {
+const Inscription = ({ handleSubmit }) => {
   const [isRequired, setIsRequired] = useState(true)
   const [skillsList, setSkillsList] = useState([{ name: '', rating: null }])
   const [inputError, setInputError] = useState('')
@@ -40,8 +40,7 @@ const Inscription = ({ handleSubmit, submitImg }) => {
       setCheckBoxError(true)
       return
     }
-    submitImg(file)
-    handleSubmit(profile, skillsList)
+    handleSubmit(profile, skillsList, file)
   }
 
   const handleFile = e => {
@@ -164,8 +163,8 @@ const Inscription = ({ handleSubmit, submitImg }) => {
                   <Input
                     style={{
                       maxWidth: '50%',
-                      border: 'none',
                       fontSize: '1rem',
+                      padding: '.7rem',
                     }}
                     name='skill'
                     value={skill.name}
