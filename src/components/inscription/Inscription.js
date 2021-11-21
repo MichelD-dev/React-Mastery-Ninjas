@@ -79,12 +79,9 @@ const Inscription = ({ handleSubmit }) => {
     }
   }
 
-  const requiredInputAlert = isRequired && inputError
-
   return (
     <Container text>
       <Form onSubmit={onSubmitHandler}>
-
         {/*------------------------------------NAME----------------------------------- */}
 
         <Form.Field required>
@@ -93,19 +90,14 @@ const Inscription = ({ handleSubmit }) => {
             name='name'
             id='name'
             ref={inputRef}
-            onchange={e => {
+            onChange={e => {
               setProfile({ ...profile, name: e.target.value })
               setInputError('')
             }}
-            onBlur={isValueEntered}
+            onBlur={isValueEntered} //FIXME pas d'alerte si on efface le champ
             value={profile.name}
-            // isrequired={true}
-            style={{
-              boxShadow: requiredInputAlert && '0 0 5px #CC0000',
-              backgroundColor: requiredInputAlert && '#ffe4e1',
-            }}
+            error={inputError}
           />
-          <p style={{ color: 'red', marginTop: '.5rem' }}>{inputError}</p>
         </Form.Field>
 
         {/*------------------------------------PHOTO----------------------------------- */}
@@ -160,28 +152,46 @@ const Inscription = ({ handleSubmit }) => {
           <label>Vos langages connus:</label>
           {skillsList.map((skill, i) => {
             return (
-              <Form.Group
-                key={`name${i}`}
-                style={{ display: 'flex', justifyContent: 'space-between' }}
+              <Segment
+                size='mini'
+                style={{ padding: '0 1rem', marginTop: '0' }}
               >
-                <Input
-                  name='skill'
-                  value={skill.name}
-                  onchange={e =>
-                    retoucherSkill({ ...skill, name: e.currentTarget.value }, i)
-                  }
-                />
-
-                <Rating
-                  icon='star'
-                  defaultRating={0}
-                  maxRating={5}
-                  onRate={({ rating }) => {
-                    retoucherSkill({ ...skill, rating: 2 }, i) //FIXME le rating ne peu pas être lu directement, on doit passer par un state
+                <Form.Group
+                  key={`name${i}`}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 0,
                   }}
-                  size='huge'
-                />
-              </Form.Group>
+                >
+                  <Input
+                    style={{
+                      maxWidth: '50%',
+                      border: 'none',
+                      fontSize: '1rem',
+                    }}
+                    name='skill'
+                    value={skill.name}
+                    onChange={e =>
+                      retoucherSkill(
+                        { ...skill, name: e.currentTarget.value },
+                        i
+                      )
+                    }
+                  />
+
+                  <Rating
+                    icon='star'
+                    defaultRating={0}
+                    maxRating={5}
+                    onRate={({ rating }) => {
+                      retoucherSkill({ ...skill, rating: 2 }, i) //FIXME le rating ne peu pas être lu directement, on doit passer par un state
+                    }}
+                    size='huge'
+                  />
+                </Form.Group>
+              </Segment>
             )
           })}
 

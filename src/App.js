@@ -1,7 +1,7 @@
-import { Container, Grid, Sticky } from 'semantic-ui-react'
-import Footer from './components/footer/Footer'
-import Header from './components/header/Header'
-import { useEffect, useState } from 'react'
+import { Grid, Sticky } from 'semantic-ui-react'
+import Footer from './components/Footer/Footer'
+import Header from './components/Header/Header'
+import { useState } from 'react'
 import styles from './App.module.css'
 import Carte from './components/Carte/Carte'
 import ModalInscription from './components/Modales/ModalInscription'
@@ -55,10 +55,6 @@ function App() {
     // }
   }
 
-  // useEffect(() => {
-  //   console.log(profiles)
-  // }, [profiles])
-
   return (
     <div className={styles.container}>
       <Sticky>
@@ -71,7 +67,8 @@ function App() {
         handleSubmit={handleSubmit}
       />
 
-      <Grid className={styles.content}
+      <Grid
+        className={styles.content}
         stackable
         style={{
           margin: '5rem auto',
@@ -80,7 +77,6 @@ function App() {
       >
         {profiles.map((profil, i) => (
           <Grid.Column
-            style={{ display: 'flex', justifyContent: 'center' }}
             key={`${profil.name}${i}`}
             mobile={16}
             tablet={8}
