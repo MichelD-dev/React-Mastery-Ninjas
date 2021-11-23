@@ -10,9 +10,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { storage } from './firebase/firebase'
 import { addDoc, getDocs, collection } from 'firebase/firestore'
 import { db } from './firebase/firebase.js'
-//TODO faire fonctionner sur mobile, rien ne s'affiche...
-//TODO Implémenter auth pour possibilité de modifier son profil
-//TODO lien Github
 
 function App() {
   const [openModal, setOpenModal] = useState(false)
@@ -39,14 +36,15 @@ function App() {
   }, [profiles])
 
   const handleSubmit = (profile, skillsList, file) => {
+    const filteredSkillsList = skillsList.filter(skill => skill.name !== '')
     setProfiles([
       ...profiles,
-      { ...profile, photo: file?.name, skills: skillsList },
+      { ...profile, photo: file?.name, skills: filteredSkillsList },
     ])
     setOpenModal(false)
-    submit(profile, skillsList, file)
+    submit(profile, filteredSkillsList, file)
   }
-//TODO async... directement ds le handleSubmit avec fonction anonyme?
+
   const submit = async (profile, skillsList, file) => {
     try {
       // on crée une référence vers le fichier dans firebase

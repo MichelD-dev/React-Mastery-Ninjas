@@ -191,7 +191,6 @@ const Inscription = ({ handleSubmit }) => {
             )
           })}
           <Button fluid onClick={ajouterSkill} content='Ajouter un langage' />
-{/*//FIXME ajoute un champ vide au ModalProfil si on ajoute un champ langage sans le remplir */}
           <Form.Field style={{ marginTop: '3rem' }}>
             <Form.Checkbox
               error={
@@ -210,7 +209,7 @@ const Inscription = ({ handleSubmit }) => {
             />
           </Form.Field>
         </Form.Field>
-        <Button //TODO changer les Button en Input type button...
+        <Button
           style={{ marginTop: '2rem' }}
           positive
           content="Yep, that's me"
