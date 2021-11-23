@@ -2,7 +2,12 @@ import { Button, Menu } from 'semantic-ui-react'
 import styles from './Header.module.css'
 
 const Header = ({ openModal }) => (
-  <Menu stackable borderless className={styles.header}>
+  <Menu
+    stackable
+    borderless
+    style={{ backgroundColor: '#eee' }}
+    className={styles.header}
+  >
     <div>React Mastery Ninjas</div>
     <Menu.Menu position='right'>
       <Button

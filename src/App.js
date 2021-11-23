@@ -10,9 +10,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { storage } from './firebase/firebase'
 import { addDoc, getDocs, collection } from 'firebase/firestore'
 import { db } from './firebase/firebase.js'
-//TODO faire fonctionner sur mobile, rien ne s'affiche...
-//TODO Implémenter auth pour possibilité de modifier son profil
-//TODO lien Github
 
 function App() {
   const [openModal, setOpenModal] = useState(false)
@@ -39,33 +36,37 @@ function App() {
   }, [profiles])
 
   const handleSubmit = (profile, skillsList, file) => {
+    const filteredSkillsList = skillsList.filter(skill => skill.name !== '')
     setProfiles([
       ...profiles,
-      { ...profile, photo: file?.name, skills: skillsList },
+      {
+        ...profile,
+        photo: file?.name,
+        skills: filteredSkillsList,
+      },
     ])
     setOpenModal(false)
-    submit(profile, skillsList, file)
-  }
-//TODO async... directement ds le handleSubmit avec fonction anonyme?
-  const submit = async (profile, skillsList, file) => {
-    try {
-      // on crée une référence vers le fichier dans firebase
-      const imgRef = file && ref(storage, file.name)
+    async function submit(profile, skillsList, file) {
+      try {
+        // on crée une référence vers le fichier dans firebase
+        const imgRef = file && ref(storage, file.name)
 
-      // On upload l'image
-      const snapshot = file && (await uploadBytes(imgRef, file))
+        // On upload l'image
+        const snapshot = file && (await uploadBytes(imgRef, file))
 
-      // On récupère le lien (l'url de l'image)
-      const url = file && (await getDownloadURL(snapshot.ref))
-      const profilRef = await addDoc(collection(db, 'profiles'), {
-        ...profile,
-        photo: url,
-        skills: skillsList,
-      })
-      setSubmitted(val => !val)
-    } catch (e) {
-      setError(e.message)
+        // On récupère le lien (l'url de l'image)
+        const url = file && (await getDownloadURL(snapshot.ref))
+        const profilRef = await addDoc(collection(db, 'profiles'), {
+          ...profile,
+          photo: url,
+          skills: skillsList,
+        })
+        setSubmitted(val => !val)
+      } catch (e) {
+        setError(e.message)
+      }
     }
+    submit()
   }
 
   return (

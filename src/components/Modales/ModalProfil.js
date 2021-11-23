@@ -21,7 +21,7 @@ const ModalProfil = ({ profil }) => {
           color: '#666',
         }}
       >
-        {name.toUpperCase() + name.slice(1)}
+        {name[0].toUpperCase() + name.slice(1)}
       </Modal.Header>
       <Modal.Content>
         {profil.skills[0].name && (
