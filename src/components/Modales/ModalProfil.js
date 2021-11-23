@@ -11,11 +11,7 @@ const ModalProfil = ({ profil }) => {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={
-        <Button size='large' fluid>
-          En savoir plus
-        </Button>
-      }
+      trigger={<Button size='large' fluid content='En savoir plus' />}
     >
       <Modal.Header
         style={{
@@ -25,7 +21,7 @@ const ModalProfil = ({ profil }) => {
           color: '#666',
         }}
       >
-        {name}
+        {name.toUpperCase() + name.slice(1)}
       </Modal.Header>
       <Modal.Content>
         {profil.skills[0].name && (

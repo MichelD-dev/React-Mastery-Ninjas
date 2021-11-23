@@ -1,15 +1,18 @@
-import { Grid, Sticky } from 'semantic-ui-react'
+import { Grid, Segment, Sticky } from 'semantic-ui-react'
 import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
-import { useState, useEffect } from 'react'
-import styles from './App.module.css'
 import Carte from './components/Carte/Carte'
 import ModalInscription from './components/Modales/ModalInscription'
 import ModalCGI from './components/Modales/ModalCGI'
+import styles from './App.module.css'
+import { useState, useEffect } from 'react'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { storage } from './firebase/firebase'
 import { addDoc, getDocs, collection } from 'firebase/firestore'
 import { db } from './firebase/firebase.js'
+//TODO faire fonctionner sur mobile, rien ne s'affiche...
+//TODO Implémenter auth pour possibilité de modifier son profil
+//TODO lien Github
 
 function App() {
   const [openModal, setOpenModal] = useState(false)
@@ -43,7 +46,7 @@ function App() {
     setOpenModal(false)
     submit(profile, skillsList, file)
   }
-
+//TODO async... directement ds le handleSubmit avec fonction anonyme?
   const submit = async (profile, skillsList, file) => {
     try {
       // on crée une référence vers le fichier dans firebase
@@ -80,14 +83,18 @@ function App() {
         className={styles.content}
         stackable
         style={{
-          margin: '5rem auto',
-          width: '90%',
+          margin: '5rem 0',
         }}
       >
         {data.map((profil, i) => {
           return (
             <Grid.Column key={profil.id} mobile={16} tablet={8} computer={4}>
-              <Carte profil={profil} />
+              <Segment
+                basic
+                style={{ display: 'flex', justifyContent: 'center' }}
+              >
+                <Carte profil={profil} />
+              </Segment>
             </Grid.Column>
           )
         })}

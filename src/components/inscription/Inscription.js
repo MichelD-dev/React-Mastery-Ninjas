@@ -170,7 +170,7 @@ const Inscription = ({ handleSubmit }) => {
                       retoucherSkill(
                         {
                           ...skill,
-                          name: e.target.value !== '' && e.target.value,
+                          name: e.target.value !== '' ? e.target.value : '',
                         },
                         i
                       )
@@ -190,10 +190,8 @@ const Inscription = ({ handleSubmit }) => {
               </Segment>
             )
           })}
-          <Button fluid onClick={ajouterSkill}>
-            Ajouter un langage
-          </Button>
-
+          <Button fluid onClick={ajouterSkill} content='Ajouter un langage' />
+{/*//FIXME ajoute un champ vide au ModalProfil si on ajoute un champ langage sans le remplir */}
           <Form.Field style={{ marginTop: '3rem' }}>
             <Form.Checkbox
               error={
@@ -212,9 +210,11 @@ const Inscription = ({ handleSubmit }) => {
             />
           </Form.Field>
         </Form.Field>
-        <Button style={{ marginTop: '2rem' }} positive>
-          Yep, that's me
-        </Button>
+        <Button //TODO changer les Button en Input type button...
+          style={{ marginTop: '2rem' }}
+          positive
+          content="Yep, that's me"
+        />
       </Form>
     </Container>
   )
