@@ -1,9 +1,12 @@
+import { useEffect, useState } from 'react'
 import { Card, Header, Image, Rating, Segment } from 'semantic-ui-react'
 import ModalProfil from '../Modales/ModalProfil'
 import { avatars } from './avatars'
 
 const Carte = ({ profil }) => {
-  const randomImage = avatars[Math.floor(Math.random() * 24)]
+  const [randomImage, setRandomImage] = useState(null)
+
+  useEffect(() => setRandomImage(avatars[Math.floor(Math.random() * 24)]), [])
 
   return (
     <Card>

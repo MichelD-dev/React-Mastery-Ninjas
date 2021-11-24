@@ -1,6 +1,6 @@
 # Site mis en ligne sur Firebase
 
-https://react-mastery-ninjas-7b5a9.firebaseapp.com
+https://react-mastery-ninjas-7b5a9.web.app/
 
 # Getting Started with Create React App
 

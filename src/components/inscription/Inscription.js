@@ -6,6 +6,7 @@ import {
   Segment,
   Image,
   TextArea,
+  Label,
 } from 'semantic-ui-react'
 import Input from './Input'
 
@@ -14,7 +15,8 @@ import { useEffect, useRef, useState } from 'react'
 
 const Inscription = ({ handleSubmit }) => {
   const [skillsList, setSkillsList] = useState([{ name: '', rating: null }])
-  const [inputError, setInputError] = useState('')
+  const [inputNameError, setInputNameError] = useState('')
+  const [inputSkillEmpty, setInputSkillEmpty] = useState('')
   const [profile, setProfile] = useState({
     name: '',
     presentation: '',
@@ -22,10 +24,11 @@ const Inscription = ({ handleSubmit }) => {
   const [file, setFile] = useState(null)
   const [termsChecked, setTermsChecked] = useState(false)
   const [checkBoxError, setCheckBoxError] = useState(false)
+  const [addedFieldError, setAddedFieldError] = useState(false)
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
-  const inputRef = useRef()
+  const nameInputRef = useRef()
 
-  useEffect(() => inputRef.current.focus(), [])
+  useEffect(() => nameInputRef.current.focus(), [])
 
   const files = acceptedFiles.map(file => (
     <li key={file.path}>
@@ -51,6 +54,11 @@ const Inscription = ({ handleSubmit }) => {
 
   const ajouterSkill = e => {
     e.preventDefault()
+    if (skillsList[0].name === '') {
+      setAddedFieldError(true)
+      setInputSkillEmpty('Veuillez indiquer au moins un langage')
+      return
+    }
     setSkillsList([...skillsList, { name: '', rating: null }])
   }
 
@@ -64,17 +72,18 @@ const Inscription = ({ handleSubmit }) => {
   }
 
   const isValueEntered = ref => {
-    if (ref.currentTarget.value === '') {
-      setInputError('Veuillez remplir ce champ')
+    if (ref.currentTarget.value === '' && !addedFieldError) {
+      setInputNameError('Veuillez remplir ce champ')
       ref.currentTarget.focus()
     } else {
-      setInputError('')
+      setInputNameError('')
     }
   }
 
   return (
     <Container text>
       <Form onSubmit={onSubmitHandler}>
+        
         {/*------------------------------------NAME----------------------------------- */}
 
         <Form.Field required>
@@ -82,14 +91,14 @@ const Inscription = ({ handleSubmit }) => {
           <Input
             name='name'
             id='name'
-            ref={inputRef}
+            ref={nameInputRef}
             onChange={e => {
               setProfile({ ...profile, name: e.target.value })
-              setInputError('')
+              setInputNameError('')
             }}
             onBlur={isValueEntered}
             value={profile.name}
-            error={inputError}
+            error={inputNameError}
           />
         </Form.Field>
 
@@ -166,17 +175,16 @@ const Inscription = ({ handleSubmit }) => {
                     }}
                     name='skill'
                     value={skill.name}
-                    onChange={e =>
-                      retoucherSkill(
-                        {
-                          ...skill,
-                          name: e.target.value !== '' ? e.target.value : '',
-                        },
-                        i
-                      )
-                    }
+                    onChange={e => {
+                      setAddedFieldError(false)
+                      retoucherSkill({ ...skill, name: e.target.value }, i)
+                    }}
                   />
-
+                  {addedFieldError && (
+                    <Label pointing='left' prompt>
+                      {inputSkillEmpty}
+                    </Label>
+                  )}
                   <Rating
                     icon='star'
                     defaultRating={0}
@@ -190,7 +198,12 @@ const Inscription = ({ handleSubmit }) => {
               </Segment>
             )
           })}
-          <Button fluid onClick={ajouterSkill} content='Ajouter un langage' />
+          <Button
+            type='button'
+            fluid
+            onClick={ajouterSkill}
+            content='Ajouter un langage'
+          />
           <Form.Field style={{ marginTop: '3rem' }}>
             <Form.Checkbox
               error={
