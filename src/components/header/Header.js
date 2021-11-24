@@ -5,7 +5,10 @@ const Header = ({ openModal }) => (
   <Menu
     stackable
     borderless
-    style={{ backgroundColor: '#eee' }}
+    style={{
+      backgroundColor: '#eee',
+      boxShadow: '0 1px 10px 0px rgba(0, 0, 0, 0.3)',
+    }}
     className={styles.header}
   >
     <div>React Mastery Ninjas</div>

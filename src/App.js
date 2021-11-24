@@ -36,7 +36,8 @@ function App() {
   }, [profiles])
 
   const handleSubmit = (profile, skillsList, file) => {
-    const filteredSkillsList = skillsList.filter(skill => skill.name !== '')
+    let filteredSkillsList = skillsList.filter(skill => skill.name !== '')
+    filteredSkillsList = filteredSkillsList ?? [{ name: '', rating: null }]
     setProfiles([
       ...profiles,
       { ...profile, photo: file?.name, skills: filteredSkillsList },
