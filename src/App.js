@@ -66,6 +66,7 @@ function App() {
       setError(e.message)
     }
   }
+  submit()
 
   return (
     <div className={styles.container}>
