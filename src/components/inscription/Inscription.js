@@ -30,6 +30,7 @@ const Inscription = ({ handleSubmit }) => {
 
   useEffect(() => nameInputRef.current.focus(), [])
 
+  // eslint-disable-next-line no-unused-vars
   const files = acceptedFiles.map(file => (
     <li key={file.path}>
       {file.path} - {file.size} bytes
@@ -63,6 +64,7 @@ const Inscription = ({ handleSubmit }) => {
   }
 
   const retoucherSkill = (newSkill, indexToModify) => {
+    // const retoucherSkill = (newSkill={name:'', rating: null}, indexToModify) => { //TODO alternative pour probleme champ vide?
     setSkillsList(
       skillsList.map((skill, index) => {
         if (index !== indexToModify) return skill
@@ -83,7 +85,6 @@ const Inscription = ({ handleSubmit }) => {
   return (
     <Container text>
       <Form onSubmit={onSubmitHandler}>
-        
         {/*------------------------------------NAME----------------------------------- */}
 
         <Form.Field required>
@@ -106,7 +107,7 @@ const Inscription = ({ handleSubmit }) => {
 
         <Form.Field>
           <label>Votre photo:</label>
-          <Segment>
+          <Segment style={{ cursor: 'pointer' }}>
             <div
               {...getRootProps({ className: 'dropzone' })}
               style={{
@@ -155,11 +156,11 @@ const Inscription = ({ handleSubmit }) => {
           {skillsList.map((skill, i) => {
             return (
               <Segment
+                key={`name${i}`}
                 size='mini'
                 style={{ padding: '0 1rem', marginTop: '0' }}
               >
                 <Form.Group
-                  key={`name${i}`}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -187,7 +188,6 @@ const Inscription = ({ handleSubmit }) => {
                   )}
                   <Rating
                     icon='star'
-                    defaultRating={0}
                     maxRating={5}
                     onRate={(e, { rating }) => {
                       retoucherSkill({ ...skill, rating: rating || 0 }, i)

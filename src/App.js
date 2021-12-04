@@ -1,22 +1,22 @@
 import { Grid, Segment, Sticky } from 'semantic-ui-react'
-import Footer from './components/Footer/Footer'
-import Header from './components/Header/Header'
-import Carte from './components/Carte/Carte'
-import ModalInscription from './components/Modales/ModalInscription'
-import ModalCGI from './components/Modales/ModalCGI'
+import Footer from 'components/Footer/Footer'
+import Header from 'components/Header/Header'
+import Carte from 'components/Carte/Carte'
+import ModalInscription from 'components/Modales/ModalInscription'
+import ModalCGI from 'components/Modales/ModalCGI'
 import styles from './App.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useReducer } from 'react'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { storage } from './firebase/firebase'
+import { storage } from 'firebase/firebase'
 import { addDoc, getDocs, collection } from 'firebase/firestore'
-import { db } from './firebase/firebase.js'
+import { db } from 'firebase/firebase.js'
 
 function App() {
   const [openModal, setOpenModal] = useState(false)
   const [openModalCGI, setOpenModalCGI] = useState(false)
   const [error, setError] = useState('')
   const [data, setData] = useState([])
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted, toggleSubmitted] = useReducer(val => !val, false)
   const [profiles, setProfiles] = useState([])
 
   useEffect(() => {
@@ -56,12 +56,12 @@ function App() {
 
       // On récupère le lien (l'url de l'image)
       const url = file && (await getDownloadURL(snapshot.ref))
-      const profilRef = await addDoc(collection(db, 'profiles'), {
+      const profilRef = await addDoc(collection(db, 'profiles'), {//FIXME profiles/tempProfiles
         ...profile,
         photo: url,
         skills: skillsList,
       })
-      setSubmitted(val => !val)
+      toggleSubmitted(val => !val)
     } catch (e) {
       setError(e.message)
     }

@@ -26,8 +26,9 @@ const ModalProfil = ({ profil }) => {
       <Modal.Content>
         {profil.skills[0].name && (
           <Segment>
-            {skills?.map(skill => (
+            {skills?.map((skill, i) => (
               <Card.Content
+                key={`${skill.name}_${i}`}
                 style={{
                   marginBottom: '10px',
                   display: 'flex',
@@ -37,12 +38,7 @@ const ModalProfil = ({ profil }) => {
                 }}
               >
                 {skill.name}:
-                <Rating
-                  icon='star'
-                  defaultRating={0}
-                  maxRating={5}
-                  rating={skill.rating}
-                />
+                <Rating icon='star' maxRating={5} rating={skill.rating} />
               </Card.Content>
             ))}
           </Segment>

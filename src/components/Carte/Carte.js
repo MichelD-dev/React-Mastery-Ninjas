@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Card, Header, Image, Rating, Segment } from 'semantic-ui-react'
-import ModalProfil from '../Modales/ModalProfil'
+import ModalProfil from 'components/Modales/ModalProfil'
 import { avatars } from './avatars'
 
 const Carte = ({ profil }) => {
@@ -28,9 +28,10 @@ const Carte = ({ profil }) => {
           ) : (
             <Segment>
               {profil.skills.map(
-                skill =>
+                (skill, i) =>
                   skill.name && (
                     <Card.Content
+                      key={`${skill.name}_${i}`}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -39,12 +40,7 @@ const Carte = ({ profil }) => {
                       }}
                     >
                       {skill.name[0].toUpperCase() + skill.name.slice(1)}:
-                      <Rating
-                        icon='star'
-                        defaultRating={0}
-                        maxRating={5}
-                        rating={skill.rating}
-                      />
+                      <Rating icon='star' maxRating={5} rating={skill.rating} />
                     </Card.Content>
                   )
               )}

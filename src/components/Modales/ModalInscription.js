@@ -1,5 +1,5 @@
 import { Modal } from 'semantic-ui-react'
-import Form from '../Inscription/Inscription'
+import Form from 'components/Inscription/Inscription'
 
 const ModalInscription = ({ openModal, setOpenModal, handleSubmit }) => {
   return (
