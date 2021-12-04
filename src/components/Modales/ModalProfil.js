@@ -24,7 +24,7 @@ const ModalProfil = ({ profil }) => {
         {name[0].toUpperCase() + name.slice(1)}
       </Modal.Header>
       <Modal.Content>
-        {profil.skills[0].name && (
+        {profil.skills[0]?.name && (
           <Segment>
             {skills?.map((skill, i) => (
               <Card.Content

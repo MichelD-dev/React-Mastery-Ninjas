@@ -9,22 +9,27 @@ import {
   Label,
 } from 'semantic-ui-react'
 import Input from './Input'
-
 import { useDropzone } from 'react-dropzone'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 
-const Inscription = ({ handleSubmit }) => {
-  const [skillsList, setSkillsList] = useState([{ name: '', rating: null }])
-  const [inputNameError, setInputNameError] = useState('')
-  const [inputSkillEmpty, setInputSkillEmpty] = useState('')
-  const [profile, setProfile] = useState({
+const initialState = {
+  skillsList: [{ name: '', rating: null }],
+  inputNameError: '',
+  inputSkillEmpty: '',
+  profile: {
     name: '',
     presentation: '',
-  })
-  const [file, setFile] = useState(null)
-  const [termsChecked, setTermsChecked] = useState(false)
-  const [checkBoxError, setCheckBoxError] = useState(false)
-  const [addedFieldError, setAddedFieldError] = useState(false)
+  },
+  file: null,
+  termsChecked: false,
+  checkBoxError: false,
+  addedFieldError: false,
+}
+
+const reducer = (state, action) => ({ ...state, ...action })
+
+const Inscription = ({ handleSubmit }) => {
+  const [state, dispatch] = useReducer(reducer, initialState)
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
   const nameInputRef = useRef()
 
@@ -39,46 +44,45 @@ const Inscription = ({ handleSubmit }) => {
 
   const onSubmitHandler = e => {
     e.preventDefault()
-    if (!termsChecked) {
-      setCheckBoxError(true)
+    if (!state.termsChecked) {
+      dispatch({ checkBoxError: true })
       return
     }
-    handleSubmit(profile, skillsList, file)
+    handleSubmit(state.profile, state.skillsList, state.file)
   }
 
   const handleFile = e => {
     e.preventDefault()
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
+      dispatch({ file: e.target.files[0] })
     }
   }
 
   const ajouterSkill = e => {
     e.preventDefault()
-    if (skillsList[0].name === '') {
-      setAddedFieldError(true)
-      setInputSkillEmpty('Veuillez indiquer au moins un langage')
+    if (state.skillsList[0].name === '') {
+      dispatch({ addedFieldError: true })
+      dispatch({ inputSkillEmpty: 'Veuillez indiquer au moins un langage' })
       return
     }
-    setSkillsList([...skillsList, { name: '', rating: null }])
+    dispatch({ skillsList: [...state.skillsList, { name: '', rating: null }] })
   }
 
   const retoucherSkill = (newSkill, indexToModify) => {
-    // const retoucherSkill = (newSkill={name:'', rating: null}, indexToModify) => { //TODO alternative pour probleme champ vide?
-    setSkillsList(
-      skillsList.map((skill, index) => {
+    dispatch({
+      skillsList: state.skillsList.map((skill, index) => {
         if (index !== indexToModify) return skill
         return { ...skill, ...newSkill }
-      })
-    )
+      }),
+    })
   }
 
   const isValueEntered = ref => {
-    if (ref.currentTarget.value === '' && !addedFieldError) {
-      setInputNameError('Veuillez remplir ce champ')
+    if (ref.currentTarget.value === '' && !state.addedFieldError) {
+      dispatch({ inputNameError: 'Veuillez remplir ce champ' })
       ref.currentTarget.focus()
     } else {
-      setInputNameError('')
+      dispatch({ inputNameError: '' })
     }
   }
 
@@ -94,12 +98,12 @@ const Inscription = ({ handleSubmit }) => {
             id='name'
             ref={nameInputRef}
             onChange={e => {
-              setProfile({ ...profile, name: e.target.value })
-              setInputNameError('')
+              dispatch({ profile: { ...state.profile, name: e.target.value } })
+              dispatch({ inputNameError: '' })
             }}
             onBlur={isValueEntered}
-            value={profile.name}
-            error={inputNameError}
+            value={state.profile.name}
+            error={state.inputNameError}
           />
         </Form.Field>
 
@@ -118,9 +122,12 @@ const Inscription = ({ handleSubmit }) => {
               }}
             >
               <input {...getInputProps()} onChange={handleFile} />
-              {file ? (
+              {state.file ? (
                 <Image>
-                  <img src={`${URL.createObjectURL(file)}`} alt='avatar' />
+                  <img
+                    src={`${URL.createObjectURL(state.file)}`}
+                    alt='avatar'
+                  />
                 </Image>
               ) : (
                 <h4
@@ -143,9 +150,11 @@ const Inscription = ({ handleSubmit }) => {
           <label>Présentation</label>{' '}
           <TextArea
             onChange={e =>
-              setProfile({ ...profile, presentation: e.target.value })
+              dispatch({
+                profile: { ...state.profile, presentation: e.target.value },
+              })
             }
-            value={profile.presentation}
+            value={state.profile.presentation}
           />
         </Form.Field>
 
@@ -153,7 +162,7 @@ const Inscription = ({ handleSubmit }) => {
 
         <Form.Field>
           <label>Vos langages connus:</label>
-          {skillsList.map((skill, i) => {
+          {state.skillsList.map((skill, i) => {
             return (
               <Segment
                 key={`name${i}`}
@@ -177,13 +186,13 @@ const Inscription = ({ handleSubmit }) => {
                     name='skill'
                     value={skill.name}
                     onChange={e => {
-                      setAddedFieldError(false)
+                      dispatch({ addedFieldError: false })
                       retoucherSkill({ ...skill, name: e.target.value }, i)
                     }}
                   />
-                  {addedFieldError && (
+                  {state.addedFieldError && (
                     <Label pointing='left' prompt>
-                      {inputSkillEmpty}
+                      {state.inputSkillEmpty}
                     </Label>
                   )}
                   <Rating
@@ -207,17 +216,17 @@ const Inscription = ({ handleSubmit }) => {
           <Form.Field style={{ marginTop: '3rem' }}>
             <Form.Checkbox
               error={
-                checkBoxError && {
+                state.checkBoxError && {
                   content: "Vous devez accepter les conditions d'utilisation",
                   pointing: 'left',
                 }
               }
               label="Je souscris aux conditions d'utilisation"
               onChange={() => {
-                setTermsChecked(true)
-                setCheckBoxError(false)
+                dispatch({ termsChecked: true })
+                dispatch({ checkBoxError: false })
               }}
-              checked={termsChecked}
+              checked={state.termsChecked}
               required
             />
           </Form.Field>

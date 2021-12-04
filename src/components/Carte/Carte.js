@@ -23,7 +23,7 @@ const Carte = ({ profil }) => {
           >
             {profil.name[0].toUpperCase() + profil.name.slice(1)}
           </Header>
-          {!profil.skills[0].name ? (
+          {profil.skills.length === 0 ? (
             <Segment style={{ textAlign: 'center' }}>No skills</Segment>
           ) : (
             <Segment>

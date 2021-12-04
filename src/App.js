@@ -5,19 +5,25 @@ import Carte from 'components/Carte/Carte'
 import ModalInscription from 'components/Modales/ModalInscription'
 import ModalCGI from 'components/Modales/ModalCGI'
 import styles from './App.module.css'
-import { useState, useEffect, useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { storage } from 'firebase/firebase'
 import { addDoc, getDocs, collection } from 'firebase/firestore'
 import { db } from 'firebase/firebase.js'
 
+const initialState = {
+  openModal: false,
+  openModalCGI: false,
+  error: '',
+  data: [],
+  profiles: [],
+}
+
+const reducer = (state, action) => ({ ...state, ...action })
+
 function App() {
-  const [openModal, setOpenModal] = useState(false)
-  const [openModalCGI, setOpenModalCGI] = useState(false)
-  const [error, setError] = useState('')
-  const [data, setData] = useState([])
-  const [submitted, toggleSubmitted] = useReducer(val => !val, false)
-  const [profiles, setProfiles] = useState([])
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [, toggleSubmitted] = useReducer(val => !val, false)
 
   useEffect(() => {
     const getProfiles = async () => {
@@ -27,22 +33,24 @@ function App() {
           id: doc.id,
           ...doc.data(),
         }))
-        setData(cards)
+        dispatch({ data: cards })
       } catch (e) {
-        setError(e.message)
+        dispatch({ error: e.message })
       }
     }
     getProfiles()
-  }, [profiles])
+  }, [state.profiles])
 
   const handleSubmit = (profile, skillsList, file) => {
     let filteredSkillsList = skillsList.filter(skill => skill.name !== '')
     filteredSkillsList = filteredSkillsList ?? [{ name: '', rating: null }]
-    setProfiles([
-      ...profiles,
-      { ...profile, photo: file?.name, skills: filteredSkillsList },
-    ])
-    setOpenModal(false)
+    dispatch({
+      profiles: [
+        ...state.profiles,
+        { ...profile, photo: file?.name, skills: filteredSkillsList },
+      ],
+    })
+    dispatch({ openModal: false })
     submit(profile, filteredSkillsList, file)
   }
 
@@ -56,26 +64,28 @@ function App() {
 
       // On récupère le lien (l'url de l'image)
       const url = file && (await getDownloadURL(snapshot.ref))
-      const profilRef = await addDoc(collection(db, 'profiles'), {//FIXME profiles/tempProfiles
+      // eslint-disable-next-line no-unused-vars
+      const profilRef = await addDoc(collection(db, 'profiles'), {
+      
         ...profile,
         photo: url,
         skills: skillsList,
       })
-      toggleSubmitted(val => !val)
+      toggleSubmitted()
     } catch (e) {
-      setError(e.message)
+      dispatch({ error: e.message })
     }
   }
 
   return (
     <div className={styles.container}>
       <Sticky>
-        <Header openModal={() => setOpenModal(true)}></Header>
+        <Header openModal={() => dispatch({ openModal: true })}></Header>
       </Sticky>
 
       <ModalInscription
-        openModal={openModal}
-        setOpenModal={setOpenModal}
+        openModal={state.openModal}
+        dispatch={dispatch}
         handleSubmit={handleSubmit}
       />
       <Grid
@@ -85,7 +95,7 @@ function App() {
           margin: '5rem 0',
         }}
       >
-        {data.map((profil, i) => {
+        {state.data.map(profil => {
           return (
             <Grid.Column key={profil.id} mobile={16} tablet={8} computer={4}>
               <Segment
@@ -98,8 +108,8 @@ function App() {
           )
         })}
       </Grid>
-      <ModalCGI openModal={openModalCGI} setOpenModal={setOpenModalCGI} />
-      <Footer openModal={() => setOpenModalCGI(true)} />
+      <ModalCGI openModal={state.openModalCGI} dispatch={dispatch} />
+      <Footer openModal={() => dispatch({ openModalCGI: true })} />
     </div>
   )
 }

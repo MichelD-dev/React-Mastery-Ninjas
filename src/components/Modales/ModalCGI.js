@@ -1,11 +1,11 @@
 import { Modal } from 'semantic-ui-react'
 
-const ModalCGI = ({ openModal, setOpenModal }) => {
+const ModalCGI = ({ openModal, dispatch }) => {
   return (
     <Modal
       size='tiny'
-      onClose={() => setOpenModal(false)}
-      onOpen={() => setOpenModal(true)}
+      onClose={() => dispatch({ openModalCGI: false })}
+      onOpen={() => dispatch({ openModalCGI: true })}
       open={openModal}
       style={{ textAlign: 'center' }}
     >

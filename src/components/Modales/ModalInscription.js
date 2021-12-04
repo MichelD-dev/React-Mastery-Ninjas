@@ -1,11 +1,11 @@
 import { Modal } from 'semantic-ui-react'
 import Form from 'components/Inscription/Inscription'
 
-const ModalInscription = ({ openModal, setOpenModal, handleSubmit }) => {
+const ModalInscription = ({ openModal, dispatch, handleSubmit }) => {
   return (
     <Modal
-      onClose={() => setOpenModal(false)}
-      onOpen={() => setOpenModal(true)}
+      onClose={() => dispatch({ openModal: false })}
+      onOpen={() => dispatch({ openModal: true })}
       open={openModal}
     >
       <Modal.Header>Formulaire d'inscription</Modal.Header>
