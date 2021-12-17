@@ -5,7 +5,6 @@ const ModalCGI = ({ openModal, dispatch }) => {
     <Modal
       size='tiny'
       onClose={() => dispatch({ openModalCGI: false })}
-      onOpen={() => dispatch({ openModalCGI: true })}
       open={openModal}
       style={{ textAlign: 'center' }}
     >

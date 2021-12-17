@@ -5,7 +5,6 @@ const ModalInscription = ({ openModal, dispatch, handleSubmit }) => {
   return (
     <Modal
       onClose={() => dispatch({ openModal: false })}
-      onOpen={() => dispatch({ openModal: true })}
       open={openModal}
     >
       <Modal.Header>Formulaire d'inscription</Modal.Header>

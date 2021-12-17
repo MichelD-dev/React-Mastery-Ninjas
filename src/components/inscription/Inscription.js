@@ -13,17 +13,16 @@ import { useDropzone } from 'react-dropzone'
 import { useEffect, useReducer, useRef } from 'react'
 
 const initialState = {
-  skillsList: [{ name: '', rating: null }],
-  inputNameError: '',
-  inputSkillEmpty: '',
   profile: {
     name: '',
     presentation: '',
   },
+  skillsList: [{ name: '', rating: null }],
+  inputNameError: '',
   file: null,
   termsChecked: false,
   checkBoxError: false,
-  addedFieldError: false,
+  addedFieldError: '',
 }
 
 const reducer = (state, action) => ({ ...state, ...action })
@@ -58,11 +57,9 @@ const Inscription = ({ handleSubmit }) => {
     }
   }
 
-  const ajouterSkill = e => {
-    e.preventDefault()
+  const ajouterSkill = () => {
     if (state.skillsList[0].name === '') {
-      dispatch({ addedFieldError: true })
-      dispatch({ inputSkillEmpty: 'Veuillez indiquer au moins un langage' })
+      dispatch({ addedFieldError: 'Veuillez indiquer au moins un langage' })
       return
     }
     dispatch({ skillsList: [...state.skillsList, { name: '', rating: null }] })
@@ -78,7 +75,7 @@ const Inscription = ({ handleSubmit }) => {
   }
 
   const isValueEntered = ref => {
-    if (ref.currentTarget.value === '' && !state.addedFieldError) {
+    if (ref.currentTarget.value === '') {
       dispatch({ inputNameError: 'Veuillez remplir ce champ' })
       ref.currentTarget.focus()
     } else {
@@ -186,13 +183,13 @@ const Inscription = ({ handleSubmit }) => {
                     name='skill'
                     value={skill.name}
                     onChange={e => {
-                      dispatch({ addedFieldError: false })
+                      dispatch({ addedFieldError: '' })
                       retoucherSkill({ ...skill, name: e.target.value }, i)
                     }}
                   />
                   {state.addedFieldError && (
                     <Label pointing='left' prompt>
-                      {state.inputSkillEmpty}
+                      {state.addedFieldError}
                     </Label>
                   )}
                   <Rating
