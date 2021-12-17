@@ -23,7 +23,6 @@ const reducer = (state, action) => ({ ...state, ...action })
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const [, toggleSubmitted] = useReducer(val => !val, false)
 
   useEffect(() => {
     const getProfiles = async () => {
@@ -66,12 +65,10 @@ function App() {
       const url = file && (await getDownloadURL(snapshot.ref))
       // eslint-disable-next-line no-unused-vars
       const profilRef = await addDoc(collection(db, 'profiles'), {
-      
         ...profile,
         photo: url,
         skills: skillsList,
       })
-      toggleSubmitted()
     } catch (e) {
       dispatch({ error: e.message })
     }
